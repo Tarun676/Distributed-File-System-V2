@@ -4,31 +4,142 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DFS Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="demo.css">
+    <style>
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
 </head>
 <body>
+    <button class="logout-btn" onclick="window.location.href='login.html'">Logout</button>
     <h1>Distributed File System Dashboard</h1>
 
     <!-- File Upload Form -->
     <form id="uploadForm">
         <input type="file" id="fileInput">
         <button type="submit">Upload</button>
+        <div class="progress-container">
+            <progress id="uploadProgress" value="0" max="100"></progress>
+            <div id="progressText"></div>
+        </div>
     </form>
 
     <!-- File List -->
     <h2>Stored Files</h2>
+    <div id="fileControls"></div>
     <table id="fileTable">
         <tr>
             <th>File Name</th>
-            <th>Size</th>
             <th>Action</th>
+            <th>Node Distribution</th>
         </tr>
     </table>
 
     <!-- Storage Nodes Status -->
     <h2>Storage Nodes</h2>
-    <ul id="nodeStatus"></ul>
-
+    <div class="nodes-container">
+        <div class="node" id="node1">
+            <div class="heartbeat-indicator"></div>
+            <div class="node-title">Node 1</div>
+            <div class="node-status"></div>
+            <div class="node-files"></div>
+            <button onclick="toggleNode('node1')" class="node-toggle">Simulate Node 1 Failure</button>
+        </div>
+        <div class="node" id="node2">
+            <div class="node-title">Node 2</div>
+            <div class="node-status"></div>
+            <div class="node-files"></div>
+            <button onclick="toggleNode('node2')" class="node-toggle">Simulate Node 2 Failure</button>
+        </div>
+        <div class="node" id="node3">
+            <div class="node-title">Node 3</div>
+            <div class="node-status"></div>
+            <div class="node-files"></div>
+            <button onclick="toggleNode('node3')" class="node-toggle">Simulate Node 3 Failure</button>
+        </div>
+    </div>
+    <!-- <script type="text/javascript" src="demo.js"></script> -->
     <script src="script.js"></script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <script>
+        const socket = io('http://localhost:5000');
+        
+        socket.on('fileOperation', (data) => {
+            console.log('File operation:', data);
+            updateVisualization(data);
+        });
+    
+        function updateVisualization(data) {
+            const visualizer = document.getElementById('file-visualizer');
+            
+            if (data.type === 'upload') {
+                visualizer.innerHTML = `
+                    <div class="upload-animation">
+                        <div class="file-icon">📄 ${data.file}</div>
+                        <div class="upload-progress">
+                            ${data.status === 'started' ? 'Uploading...' : 'Upload complete!'}
+                        </div>
+                    </div>
+                `;
+            }
+    
+            if (data.type === 'replicate' && data.node) {
+                const nodeElement = document.getElementById(data.node);
+                if (nodeElement) {
+                    createFileParticle(nodeElement);
+                }
+            }
+        }
+    
+        function createFileParticle(nodeElement) {
+            const particle = document.createElement('div');
+            particle.className = 'file-particle';
+            particle.textContent = '📄';
+            nodeElement.appendChild(particle);
+            
+            setTimeout(() => particle.remove(), 1000);
+        }
+    </script>
 </body>
 </html>
+
+<script>
+function showFileReplication(filename) {
+    const status = document.querySelector('.upload-status');
+    status.textContent = `Replicating: ${filename}`;
+    status.style.display = 'block';
+
+    const paths = document.querySelectorAll('.path');
+    paths.forEach((path, index) => {
+        setTimeout(() => {
+            path.classList.add('active');
+            setTimeout(() => path.classList.remove('active'), 1000);
+        }, index * 300);
+    });
+
+    setTimeout(() => {
+        status.style.display = 'none';
+    }, 2000);
+}
+
+// Add this to your existing upload function
+document.querySelector('#uploadForm').addEventListener('submit', function(e) {
+    // ... your existing upload code ...
+    showFileReplication(filename); // Add this line after successful upload
+});
+</script>

@@ -1,23 +1,997 @@
 body {
     font-family: Arial, sans-serif;
-    text-align: center;
+    padding: 20px;
 }
 
+.nodes-container {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.node {
+    border: 3px solid #ccc;
+    padding: 15px;
+    border-radius: 8px;
+    width: 200px;
+    text-align: center;
+    position: relative;
+}
+
+.node-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.node-status {
+    padding: 8px;
+    margin: 10px 0;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.status-indicator {
+    font-size: 20px;
+    margin-right: 8px;
+}
+
+.status-indicator.online {
+    color: #4CAF50;
+}
+
+.status-indicator.offline {
+    color: #ff4444;
+}
+
+.node-status.online {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.node-status.offline {
+    background-color: #ff4444;
+    color: white;
+}
+
+.node.online {
+    border-color: #4CAF50;
+}
+
+.node.offline {
+    border-color: #ff4444;
+}
+
+.node-status.online {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.node-status.offline {
+    background-color: #ff4444;
+    color: white;
+}
+
+.node-files {
+    background-color: #f5f5f5;
+    padding: 10px;
+    min-height: 100px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+/* Table Styles */
 table {
-    width: 80%;
-    margin: 20px auto;
     border-collapse: collapse;
+    width: 100%;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 th, td {
-    padding: 10px;
-    border: 1px solid black;
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
 }
 
+/* Simplified button styles */
 button {
-    padding: 10px;
-    background-color: green;
+    padding: 8px 15px;
+    margin: 0 5px;
+    cursor: pointer;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #e9ecef;
+}
+
+.header-row {
+    background-color: #f8f9fa;
+}
+
+th {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Button Styles */
+.button-group {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-download, .btn-delete {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-download {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-delete {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn-download:hover {
+    background-color: #45a049;
+}
+
+.btn-delete:hover {
+    background-color: #da190b;
+}
+
+/* Node Distribution Styles */
+.file-distribution {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.node-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.node-indicator.active {
+    background-color: #4CAF50;
+}
+
+.node-indicator.inactive {
+    background-color: #ddd;
+}
+
+/* File size and name styling */
+td:first-child {
+    font-weight: 500;
+}
+
+td:nth-child(2) {
+    color: #666;
+}
+
+.node-toggle {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #007bff;
     color: white;
     border: none;
+    border-radius: 4px;
     cursor: pointer;
 }
+
+.node-toggle:hover {
+    background-color: #0056b3;
+}
+
+#uploadForm {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+}
+
+.progress-container {
+    margin-top: 10px;
+    display: none;
+}
+
+#uploadProgress {
+    width: 100%;
+    height: 20px;
+    margin-bottom: 5px;
+}
+
+#progressText {
+    text-align: center;
+    color: #666;
+}
+
+/* Add these styles to your existing styles.css */
+.login-container {
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-group label {
+    font-weight: bold;
+}
+
+.form-group input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.login-form button {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.login-form button:hover {
+    background-color: #45a049;
+}
+
+.logout-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 8px 15px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.logout-button:hover {
+    background-color: #da190b;
+}
+/* Keep all existing styles until distribution visualization */
+
+/* Replace the distribution visualization styles with these */
+/* Remove all these sections */
+
+.file-particle {
+    position: fixed;
+    width: 30px;
+    height: 30px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+    z-index: 1000;
+    pointer-events: none;
+}
+
+/* Add visualization styles */
+.file-visualizer {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    z-index: 1000;
+}
+
+.replication-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.file-particle {
+    animation: moveFile 1s ease-in-out;
+    font-size: 24px;
+}
+
+@keyframes moveFile {
+    0% { transform: scale(0) translate(-50px, -50px); opacity: 0; }
+    50% { transform: scale(1.2) translate(0, 0); opacity: 1; }
+    100% { transform: scale(1) translate(0, 0); opacity: 0; }
+}
+
+.upload-animation {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.upload-progress {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+
+.node-point {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: transparent;
+    pointer-events: none;
+}
+
+.file-particle {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+    animation: moveParticle 1s ease-out;
+}
+
+@keyframes moveParticle {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 0; }
+}
+
+/* New visualization styles */
+.visualization-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    height: 300px;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.upload-status {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-radius: 20px;
+    display: none;
+}
+
+.path {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 2px;
+    background: #4CAF50;
+    transform-origin: left center;
+    opacity: 0;
+}
+
+.path1 { transform: rotate(0deg); }
+.path2 { transform: rotate(120deg); }
+.path3 { transform: rotate(240deg); }
+
+.path.active {
+    animation: pathAnimation 1s ease-in-out;
+}
+
+@keyframes pathAnimation {
+    0% { opacity: 0; width: 0; }
+    50% { opacity: 1; width: 50px; }
+    100% { opacity: 0; width: 100px; }
+}
+#uploadForm {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    max-width: 600px;
+    text-align: center;
+}
+
+#fileInput {
+    padding: 15px;
+    border: 3px dashed #1a73e8;
+    border-radius: 8px;
+    width: 70%;
+    margin: 10px auto;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#fileInput:hover {
+    border-color: #0d47a1;
+    background-color: #f8f9fa;
+}
+
+#uploadForm button {
+    background-color: #1a73e8;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+}
+
+#uploadForm button:hover {
+    background-color: #0d47a1;
+    transform: translateY(-2px);
+}
+
+.progress-container {
+    margin-top: 20px;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+#uploadProgress {
+    width: 100%;
+    height: 12px;
+    border-radius: 6px;
+    background-color: #e9ecef;
+}
+
+#progressText {
+    margin-top: 8px;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Storage Nodes styling */
+.nodes-container {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+    justify-content: center;
+    max-width: 1200px;
+}
+
+.node {
+    flex: 0 1 300px;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.node:hover {
+    transform: translateY(-5px);
+}
+
+.node-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #0d47a1;  /* Darker blue */
+    margin-bottom: 15px;
+}
+
+.node-status {
+    margin: 15px 0;
+    padding: 8px 15px;
+    border-radius: 20px;
+    display: inline-block;
+    font-weight: 700;  /* Made bolder */
+    color: #000000;  /* Darker base color */
+}
+
+.node-status.online {
+    background-color: #d4edda;
+    color: #064e06;  /* Even darker green */
+    font-weight: 700;
+}
+
+.node-status.offline {
+    background-color: #f8d7da;
+    color: #4f0000;  /* Even darker red */
+    font-weight: 700;
+}
+
+.node-toggle {
+    background-color: #1a73e8;  /* Google blue */
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;  /* Made bolder */
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    width: 80%;
+}
+
+.node-toggle:hover {
+    background-color: #0d47a1;  /* Darker blue on hover */
+    transform: translateY(-2px);
+}
+
+/* File controls styling */
+.file-controls {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+#fileSearch {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 200px;
+}
+
+#typeFilter {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Table styling */
+#fileTable {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 50%;
+    border-collapse: collapse;
+    max-width: 800px;
+}
+
+/* Adjust file controls to match table width */
+.file-controls {
+    width: 50%;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+#fileTable button {
+    padding: 6px 12px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#fileTable button:first-child {
+    background-color: #28a745;
+    color: white;
+}
+
+#fileTable button:last-child {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Node container styling */
+.nodes-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.node {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    flex: 1;
+}
+
+.node-title {
+    font-weight: bold;
+    color: #1a73e8;
+    margin-bottom: 10px;
+}
+
+.node-status {
+    margin: 10px 0;
+    padding: 5px 10px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.node-status.online {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.node-status.offline {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.node-toggle {
+    background-color: #6c757d;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* Progress bar styling */
+.progress-container {
+    margin-top: 10px;
+}
+
+#uploadProgress {
+    width: 100%;
+    height: 10px;
+}
+
+#progressText {
+    margin-top: 5px;
+    color: #666;
+}
+
+/* File distribution indicators */
+.file-distribution {
+    display: flex;
+    gap: 5px;
+}
+
+.node-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.node-indicator.active {
+    background-color: #28a745;
+    box-shadow: 0 0 5px #28a745;
+}
+
+.node-indicator.inactive {
+    background-color: #dc3545;
+    box-shadow: 0 0 5px #dc3545;
+    animation: pulseRed 1.5s infinite;
+}
+
+@keyframes pulseRed {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Heartbeat mechanism styles */
+.heartbeat-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #28a745;
+    animation: none; /* Default state - no animation */
+}
+
+.node.offline .heartbeat-indicator {
+    background-color: #dc3545;
+    animation: heartbeatError 1.5s ease-in-out infinite;
+}
+
+.node.online .heartbeat-indicator {
+    background-color: #28a745;
+    animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.heartbeat-status {
+    font-size: 12px;
+    margin-top: 5px;
+    color: #333333;  /* Darker gray */
+    font-weight: 600;
+}
+
+@keyframes heartbeat {
+    0% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.8; }
+}
+
+@keyframes heartbeatError {
+    0% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+    50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+    100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+.sync-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.sync-status.synced {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+}
+
+.sync-status.out-of-sync {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+
+.sync-status.checking {
+    background-color: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+}
+h1 {
+    color: #000000;
+    margin-bottom: 30px;
+    font-size: 2.2rem;  /* Reduced from 2.5rem */
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;  /* Slightly reduced from 3px */
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.15),
+        0 0 20px rgba(26, 115, 232, 0.3),
+        0 0 40px rgba(26, 115, 232, 0.2);
+    text-align: center;
+    position: relative;
+}
+
+h2 {
+    color: #000000;
+    margin: 25px 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-shadow: 
+        1px 1px 2px rgba(0, 0, 0, 0.1),
+        0 0 15px rgba(26, 115, 232, 0.2),
+        0 0 30px rgba(26, 115, 232, 0.1);
+    padding-left: 10px;
+    text-align: left;  /* Added this line */
+    margin-left: 25%;  /* Added this line to align with content */
+}
+
+/* Make file names darker in table */
+#fileTable td:first-child {
+    color: #000000;  /* Pure black */
+    font-weight: 600;  /* Made bolder */
+}
+
+#fileTable td {
+    color: #1a1a1a;  /* Darker text for all table cells */
+    font-weight: 500;
+}
+
+/* Update table header style */
+#fileTable th {
+    color: #ffffff;
+    background-color: #1a73e8;
+    padding: 15px;
+    font-weight: 700;  /* Made bolder */
+}
+
+#fileTable button {
+    padding: 6px 12px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#fileTable button:first-child {
+    background-color: #28a745;
+    color: white;
+}
+
+#fileTable button:last-child {
+    background-color: #dc3545;
+    color: white;
+}
+
+
+.node {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    flex: 1;
+}
+
+.node-title {
+    font-weight: bold;
+    color: #1a73e8;
+    margin-bottom: 10px;
+}
+
+.node-status {
+    margin: 10px 0;
+    padding: 5px 10px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.node-status.online {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.node-status.offline {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.node-toggle {
+    background-color: #6c757d;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* Progress bar styling */
+.progress-container {
+    margin-top: 10px;
+}
+
+#uploadProgress {
+    width: 100%;
+    height: 10px;
+}
+
+#progressText {
+    margin-top: 5px;
+    color: #666;
+}
+
+/* File distribution indicators */
+.file-distribution {
+    display: flex;
+    gap: 5px;
+}
+
+.node-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.node-indicator.active {
+    background-color: #28a745;
+    box-shadow: 0 0 5px #28a745;
+}
+
+.node-indicator.inactive {
+    background-color: #dc3545;
+    box-shadow: 0 0 5px #dc3545;
+    animation: pulseRed 1.5s infinite;
+}
+
+@keyframes pulseRed {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Heartbeat mechanism styles */
+.heartbeat-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #28a745;
+    animation: none; /* Default state - no animation */
+}
+
+.node.offline .heartbeat-indicator {
+    background-color: #dc3545;
+    animation: heartbeatError 1.5s ease-in-out infinite;
+}
+
+.node.online .heartbeat-indicator {
+    background-color: #28a745;
+    animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.heartbeat-status {
+    font-size: 12px;
+    margin-top: 5px;
+    color: #333333;  /* Darker gray */
+    font-weight: 600;
+}
+
+@keyframes heartbeat {
+    0% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.8; }
+}
+
+@keyframes heartbeatError {
+    0% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+    50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+    100% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+.sync-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.sync-status.synced {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+}
+
+.sync-status.out-of-sync {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+
+.sync-status.checking {
+    background-color: rgba(255, 193, 7, 0.1);
+    color: #ffc107;
+}
+
