@@ -29,8 +29,10 @@ STORAGE_NODES.forEach(dir => {
 });
 
 // Multer configuration (Upload to Node 1 initially)
+// Multer configuration
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
+        // Upload directly to first online node, others will be handled in the upload endpoint
         let availableNode = STORAGE_NODES.find((node, index) => nodeStatus[`node${index + 1}`] === "Online");
         if (!availableNode) {
             return cb(new Error("No active nodes available!"), null);
@@ -40,8 +42,59 @@ const storage = multer.diskStorage({
     filename: (req, file, cb) => cb(null, file.originalname)
 });
 
-
 const upload = multer({ storage });
+
+app.post("/upload", upload.single("file"), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).send({ message: "No file uploaded!" });
+        }
+
+        const uploadedFile = req.file.originalname;
+        let fileDistribution = [];
+
+        // Write to all online nodes simultaneously
+        const writePromises = STORAGE_NODES.map((node, index) => {
+            return new Promise((resolve) => {
+                const nodeId = `node${index + 1}`;
+                const filePath = path.join(node, uploadedFile);
+
+                if (nodeStatus[nodeId] === "Online") {
+                    try {
+                        // Read the uploaded file
+                        const fileContent = fs.readFileSync(req.file.path);
+                        // Write to each online node
+                        fs.writeFileSync(filePath, fileContent);
+                        fileDistribution[index] = true;
+                        resolve(true);
+                    } catch (error) {
+                        console.error(`Error writing to ${nodeId}:`, error);
+                        fileDistribution[index] = false;
+                        resolve(false);
+                    }
+                } else {
+                    fileDistribution[index] = false;
+                    resolve(false);
+                }
+            });
+        });
+
+        // Wait for all writes to complete
+        await Promise.all(writePromises);
+
+        res.status(200).send({ 
+            message: "File uploaded successfully!",
+            file: uploadedFile,
+            distribution: fileDistribution
+        });
+    } catch (error) {
+        console.error("Upload error:", error);
+        res.status(500).send({ 
+            message: "File upload failed!", 
+            error: error.message 
+        });
+    }
+});
 
 //Simulated Node Monitoring
 const nodes = [
@@ -51,6 +104,7 @@ const nodes = [
 ];
 
 // Update the upload endpoint
+// Remove the duplicate upload endpoint and keep only this one
 app.post("/upload", upload.single("file"), (req, res) => {
     try {
         if (!req.file) {
@@ -58,25 +112,31 @@ app.post("/upload", upload.single("file"), (req, res) => {
         }
 
         const uploadedFile = req.file.originalname;
+        const fileContent = fs.readFileSync(req.file.path);
         let fileDistribution = [];
 
-        // Record distribution status for each node
+        // Write to all online nodes directly
         STORAGE_NODES.forEach((node, index) => {
             const nodeId = `node${index + 1}`;
             const filePath = path.join(node, uploadedFile);
             
-            // Check if node is online and file exists
-            if (nodeStatus[nodeId] === "Online" && fs.existsSync(filePath)) {
-                fileDistribution.push(true);
-            } else {
+            try {
+                if (nodeStatus[nodeId] === "Online") {
+                    fs.writeFileSync(filePath, fileContent);
+                    fileDistribution.push(true);
+                } else {
+                    fileDistribution.push(false);
+                }
+            } catch (error) {
+                console.error(`Error writing to ${nodeId}:`, error);
                 fileDistribution.push(false);
             }
         });
 
         res.status(200).send({ 
-            message: "File uploaded and replicated successfully!",
+            message: "File uploaded successfully!",
             file: uploadedFile,
-            distribution: fileDistribution // Send the distribution status to frontend
+            distribution: fileDistribution
         });
     } catch (error) {
         console.error("Upload error:", error);
