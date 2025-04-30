@@ -23,6 +23,18 @@
         .logout-btn:hover {
             background-color: #c82333;
         }
+        .node-status {
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        .file-particle {
+            position: absolute;
+            animation: float 1s ease-in-out;
+        }
+        @keyframes float {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-20px); opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -73,17 +85,25 @@
             <button onclick="toggleNode('node3')" class="node-toggle">Simulate Node 3 Failure</button>
         </div>
     </div>
-    <!-- <script type="text/javascript" src="demo.js"></script> -->
+
     <script src="script.js"></script>
     <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <script>
         const socket = io('http://localhost:5000');
         
-        socket.on('fileOperation', (data) => {
-            console.log('File operation:', data);
-            updateVisualization(data);
+        socket.on('nodeStatusUpdate', (nodeStatuses) => {
+            updateNodeStatuses(nodeStatuses);
         });
-    
+
+        function updateNodeStatuses(nodeStatuses) {
+            nodeStatuses.forEach(node => {
+                const nodeElement = document.getElementById(node.id);
+                const statusElement = nodeElement.querySelector('.node-status');
+                statusElement.textContent = `Status: ${node.status}`;
+                statusElement.style.color = node.status === 'Online' ? 'green' : 'red';
+            });
+        }
+
         function updateVisualization(data) {
             const visualizer = document.getElementById('file-visualizer');
             
@@ -114,6 +134,9 @@
             
             setTimeout(() => particle.remove(), 1000);
         }
+
+        // Initial fetch and setup
+        fetchNodeStatus();
     </script>
 </body>
 </html>

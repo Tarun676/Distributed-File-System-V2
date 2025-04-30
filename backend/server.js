@@ -409,3 +409,86 @@ app.delete("/delete/:filename", (req, res) => {
 // Start server should be at the very end
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
+// Function to split file into chunks
+function splitFileIntoChunks(filePath, chunkSize) {
+    const fileContent = fs.readFileSync(filePath);
+    const chunks = [];
+    for (let i = 0; i < fileContent.length; i += chunkSize) {
+        chunks.push(fileContent.slice(i, i + chunkSize));
+    }
+    return chunks;
+}
+
+// Function to replicate chunks across nodes
+function replicateChunks(chunks, filename) {
+    chunks.forEach((chunk, index) => {
+        STORAGE_NODES.forEach((node, nodeIndex) => {
+            if (nodeStatus[`node${nodeIndex + 1}`] === "Online") {
+                const chunkPath = path.join(node, `${filename}.chunk${index}`);
+                fs.writeFileSync(chunkPath, chunk);
+            }
+        });
+    });
+}
+
+// Metadata manager to track file-to-chunk mappings
+const metadata = new Map();
+
+function updateMetadata(filename, chunks) {
+    metadata.set(filename, chunks.map((_, index) => `${filename}.chunk${index}`));
+}
+
+// Update upload endpoint to include metadata management
+app.post("/upload", upload.single("file"), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).send({ message: "No file uploaded!" });
+        }
+
+        const uploadedFile = req.file.originalname;
+        const chunks = splitFileIntoChunks(req.file.path, 64 * 1024 * 1024); // 64MB chunks
+        replicateChunks(chunks, uploadedFile);
+        updateMetadata(uploadedFile, chunks);
+
+        res.status(200).send({ 
+            message: "File uploaded and replicated successfully!",
+            file: uploadedFile
+        });
+    } catch (error) {
+        console.error("Upload error:", error);
+        res.status(500).send({ 
+            message: "File upload failed!", 
+            error: error.message 
+        });
+    }
+});
+
+// Heartbeat mechanism to monitor node health
+setInterval(() => {
+    STORAGE_NODES.forEach((node, index) => {
+        const nodeId = `node${index + 1}`;
+        // Simulate heartbeat check
+        if (nodeStatus[nodeId] === "Online") {
+            console.log(`${nodeId} is healthy.`);
+        } else {
+            console.log(`${nodeId} is down. Initiating recovery.`);
+            // Trigger re-replication logic here if needed
+        }
+    });
+}, 10000); // Check every 10 seconds
+
+
+// Endpoint to get the status of all nodes
+app.get("/node-status", (req, res) => {
+    const nodeStatuses = STORAGE_NODES.map((node, index) => {
+        const nodeId = `node${index + 1}`;
+        return {
+            id: nodeId,
+            status: nodeStatus[nodeId]
+        };
+    });
+
+    res.json(nodeStatuses);
+});

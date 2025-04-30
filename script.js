@@ -25,6 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const response = await fetch('http://localhost:5000/upload', {
                 method: 'POST',
+                headers: {
+                    'Authorization': sessionStorage.getItem('authenticated')
+                },
                 body: formData
             });
     
@@ -33,16 +36,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
     
             const data = await response.json();
-            alert(data.message);
             
             // Reset form and progress
             fileInput.value = '';
             progressBar.style.display = 'none';
             progressText.textContent = '';
             
-            // Refresh the file list and nodes
+            // Refresh immediately to show new distribution
             await loadFiles();
             await loadNodes();
+            
+            alert(data.message);
                 
         } catch (error) {
             console.error('Upload error:', error);
@@ -320,6 +324,9 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const response = await fetch('http://localhost:5000/upload', {
                     method: 'POST',
+                    headers: {
+                        'Authorization': sessionStorage.getItem('authenticated')
+                    },
                     body: formData
                 });
                 
@@ -328,14 +335,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 const data = await response.json();
-                alert(data.message);
                 
                 // Reset form and progress
                 fileInput.value = '';
                 progressBar.style.display = 'none';
                 progressText.textContent = '';
                 
-                // Refresh the file list and nodes
+                // Refresh immediately to show new distribution
                 await loadFiles();
                 await loadNodes();
                     
@@ -343,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Upload error:', error);
                 alert('Upload failed! Node Failure.');
                 progressBar.style.display = 'none';
-                progressText.textContent = '';
+                progressText.textContent = '';  
             }
         });
     
@@ -468,6 +474,18 @@ function updateHeartbeatStatus(nodeId, isOnline) {
         heartbeat.classList.add('error');
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Modify your existing toggleNode function
 function toggleNode(nodeId) {
